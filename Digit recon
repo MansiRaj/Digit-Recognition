@@ -1,0 +1,50 @@
+from keras.datasets import mnist
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+from sklearn.metrics import accuracy_score
+import random
+from sklearn import svm
+import cv2
+
+(X_train, Y_train), (X_test, Y_test)=mnist.load_data()
+
+plt.imshow(X_train[11936],cmap='gray')
+print(Y_train[11936])
+
+### Flattening the images
+num_pixels=X_train.shape[1]*X_train.shape[2]
+print(num_pixels)
+X_Train=X_train.reshape(X_train.shape[0],num_pixels)
+X_Test=X_test.reshape(X_test.shape[0],num_pixels)
+
+### Binarization of the vectors using thresholding
+for i in range(X_Train.shape[0]):
+    X_Train[i]=np.array(X_Train[i]>127,dtype='int32')
+    if i<X_Test.shape[0]:
+        X_Test[i]=np.array(X_Test[i]>127,dtype='int32')     
+        
+plt.imshow(X_Train[11936].reshape(28,28),cmap='gray')
+print(Y_train[11936])
+
+from sklearn.ensemble import RandomForestClassifier
+clf = RandomForestClassifier(max_depth=15, random_state=0)
+
+clf.fit(X_Train,Y_train)
+
+score=clf.score(X_Test,Y_test)
+score
+
+plt.gray()
+img1=cv2.imread('7.jpg',0)
+imgplot=plt.imshow(test_img)
+
+test_img = cv2.resize(img1,(28,28),interpolation=cv2.INTER_AREA)
+_,test_img = cv2.threshold(test_img, 127, 255, cv2.THRESH_BINARY_INV) 
+#test_img = img1.reshape(8,8)
+
+plt.show()
+
+t=test_img.reshape(1,-1)
+pred=clf.predict(t)
+print("prediction: ",pred)
